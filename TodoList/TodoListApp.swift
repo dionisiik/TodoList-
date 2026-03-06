@@ -10,12 +10,12 @@ import CoreData
 
 @main
 struct TodoListApp: App {
-    let persistenceController = PersistenceController.shared
+    let coreDataStack = CoreDataStack.shared
 
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .environment(\.managedObjectContext, coreDataStack.viewContext)
         }
     }
 }
