@@ -80,10 +80,10 @@ final class TodoListInteractor: TodoListInteractorProtocol {
     func search(query: String, completion: @escaping (Result<[TodoItem], any Error>) -> Void) {
         queue.async { [weak self] in
             self?.repository.search(query: query) { result in
-                DispatchQueue.main.async { completion(result)
-                }
+                DispatchQueue.main.async { completion(result) }
             }
         }
+    }
         
         
     private func saveTodoItemsFromAPI(_ items: [TodoItem], completion: @escaping (Result<Void, Error>) -> Void) {
@@ -105,6 +105,6 @@ final class TodoListInteractor: TodoListInteractorProtocol {
             }
         }
     }
-}
+
 
       

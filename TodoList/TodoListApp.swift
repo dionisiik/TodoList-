@@ -14,8 +14,7 @@ struct TodoListApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environment(\.managedObjectContext, coreDataStack.viewContext)
+            TodoListModule.build()
         }
     }
 }
