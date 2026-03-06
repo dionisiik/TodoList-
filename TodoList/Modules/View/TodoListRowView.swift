@@ -13,6 +13,7 @@ struct TodoListRowView: View {
     var onToggleCompleted: (() -> Void)? = nil
     var onTapRow: (() -> Void)? = nil
     
+
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             Button {
@@ -20,6 +21,8 @@ struct TodoListRowView: View {
             } label: {
                 Image( item.completed ? "marked" : "unmarked")
                     .foregroundStyle(item.completed ? .green : .secondary)
+                    .frame(width: 24, height: 24)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
 
@@ -31,7 +34,7 @@ struct TodoListRowView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
-                Text(item.createdAt, style: .date)
+                Text(AppDateFormatters.ddMMyy.string(from: item.createdAt))
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }

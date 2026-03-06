@@ -31,12 +31,14 @@ struct TodoListView: View {
                                     Label("Удалить", systemImage: "trash")
                                 }
                             }
-                        }                  }
-                    .searchable(text: $searchText, prompt: "Поиск")
-                    .onChange(of: searchText) { _, newValue in
-                        presenter.searchChanged(newValue)
+                        }
+                    }
+                    
                     }
                 }
+            .searchable(text: $searchText, prompt: "Поиск")
+            .onChange(of: searchText) { _, newValue in
+                presenter.searchChanged(newValue)
             }
             .navigationTitle("Задачи")
             .toolbar {
