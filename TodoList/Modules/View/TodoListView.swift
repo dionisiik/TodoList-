@@ -19,26 +19,41 @@ struct TodoListView: View {
                 if presenter.isLoading {
                     ProgressView("Загрузка...")
                 } else {
-                    List {
-                        ForEach(presenter.items, id: \.id) { item in
-                            TodoListRowView(
-                                item: item,
-                                onToggleCompleted: { presenter.toggleCompleted(item) },
-                                onTapRow: { presenter.editTapped(item: item) }
-                            )
-                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                Button(role: .destructive) { presenter.deleteTapped(item) } label: {
-                                    Label("Удалить", systemImage: "trash")
+                    VStack(spacing: 0) {
+                        HStack(spacing: 10) {
+                            Image(systemName: "mic.fill")
+                                .foregroundStyle(.secondary)
+                                .font(.body)
+                            TextField("Поиск", text: $searchText)
+                                .textFieldStyle(.plain)
+                                .onChange(of: searchText) { _, newValue in
+                                    presenter.searchChanged(newValue)
+                                }
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 10)
+                        .background(Color(uiColor: .tertiarySystemFill))
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .padding(.horizontal)
+                        .padding(.vertical, 8)
+
+                        List {
+                            ForEach(presenter.items, id: \.id) { item in
+                                TodoListRowView(
+                                    item: item,
+                                    onToggleCompleted: { presenter.toggleCompleted(item) },
+                                    onTapRow: { presenter.editTapped(item: item) }
+                                )
+                                .listRowBackground(Color(uiColor: .systemBackground))
+                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                    Button(role: .destructive) { presenter.deleteTapped(item) } label: {
+                                        Label("Удалить", systemImage: "trash")
+                                    }
                                 }
                             }
                         }
                     }
-                    
-                    }
                 }
-            .searchable(text: $searchText, prompt: "Поиск")
-            .onChange(of: searchText) { _, newValue in
-                presenter.searchChanged(newValue)
             }
             .navigationTitle("Задачи")
             .toolbar {
@@ -67,5 +82,10 @@ struct TodoListView: View {
         }
         .onAppear { presenter.onAppear() }
     }
+}
+
+// MARK: - Preview
+#Preview("Список задач") {
+    TodoListModule.build()
 }
 

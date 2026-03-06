@@ -42,6 +42,36 @@ struct TodoListRowView: View {
             .contentShape(Rectangle())
             .onTapGesture { onTapRow?() }
         }
+        .frame(minWidth: 320, maxWidth: 320, minHeight: 90)
         .padding(.vertical, 4)
-    }}
+    }
+}
+
+// MARK: - Preview
+#Preview("Ячейка задачи") {
+    List {
+        TodoListRowView(
+            item: TodoItem(
+                id: 1,
+                title: "Пример задачи",
+                taskDescription: "Описание для превью",
+                createdAt: Date(),
+                completed: false
+            ),
+            onToggleCompleted: {},
+            onTapRow: {}
+        )
+        TodoListRowView(
+            item: TodoItem(
+                id: 2,
+                title: "Выполненная задача",
+                taskDescription: nil,
+                createdAt: Date().addingTimeInterval(-86400),
+                completed: true
+            ),
+            onToggleCompleted: {},
+            onTapRow: {}
+        )
+    }
+}
 
