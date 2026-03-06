@@ -13,23 +13,25 @@ struct TodoListView: View {
     }
     
     var body: some View {
-        NavigationStack {
+        let p = presenter
+        return NavigationStack {
             Group {
                 if presenter.isLoading {
                     ProgressView("Загрузка...")
                 } else {
                     List {
                         ForEach(presenter.items, id: \.id) { item in
-                            TodoListRowView(item: item)
-                                .contentShape(Rectangle())
-                                .onTapGesture { presenter.editTapped(item: item) }
-                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                    Button(role: .destructive) { presenter.deleteTapped(item) } label: {
-                                        Label("Удалить", systemImage: "trash")
-                                    }
+                            TodoListRowView(
+                                item: item,
+                                onToggleCompleted: { presenter.toggleCompleted(item) },
+                                onTapRow: { presenter.editTapped(item: item) }
+                            )
+                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                Button(role: .destructive) { presenter.deleteTapped(item) } label: {
+                                    Label("Удалить", systemImage: "trash")
                                 }
-                        }
-                    }
+                            }
+                        }                  }
                     .searchable(text: $searchText, prompt: "Поиск")
                     .onChange(of: searchText) { _, newValue in
                         presenter.searchChanged(newValue)
@@ -45,12 +47,12 @@ struct TodoListView: View {
                 }
             }
             .alert("Ошибка", isPresented: Binding(
-                get: { presenter.errorMessage != nil },
-                set: { if !$0 { presenter.clearError() } }
+                get: { p.errorMessage != nil },
+                set: { if !$0 { p.clearError() } }
             )) {
-                Button("OK") { presenter.clearError() }
+                Button("OK") { p.clearError() }
             } message: {
-                if let msg = presenter.errorMessage { Text(msg) }
+                if let msg = p.errorMessage { Text(msg) }
             }
             .sheet(item: $router.presentedRoute) { route in
                 switch route {

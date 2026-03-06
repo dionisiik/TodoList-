@@ -27,19 +27,19 @@ final class TodoListPresenter: ObservableObject {
     }
     
     func loadTodos() {
-         isLoading = true
-         errorMessage = nil
-         interactor.loadTodos { [weak self] result in
-             guard let self else { return }
-             self.isLoading = false
-             switch result {
-             case .success(let list):
-                 self.items = list
-             case .failure(let error):
-                 self.errorMessage = error.localizedDescription
-             }
-         }
-     }
+        isLoading = true
+        errorMessage = nil
+        interactor.loadTodos { [weak self] result in
+            guard let self else { return }
+            self.isLoading = false
+            switch result {
+            case .success(let list):
+                self.items = list
+            case .failure(let error):
+                self.errorMessage = error.localizedDescription
+            }
+        }
+    }
     
     func addTapped() {
         router?.showAddTask()
@@ -68,6 +68,20 @@ final class TodoListPresenter: ObservableObject {
             switch result {
             case .success(let list):
                 self.items = list
+            case .failure(let error):
+                self.errorMessage = error.localizedDescription
+            }
+        }
+    }
+    
+    func toggleCompleted(_ item: TodoItem) {
+        var updated = item
+        updated.completed.toggle()
+        interactor.update(updated) { [weak self] result in
+            guard let self else {return}
+            switch result {
+            case .success:
+                self.loadTodos()
             case .failure(let error):
                 self.errorMessage = error.localizedDescription
             }
