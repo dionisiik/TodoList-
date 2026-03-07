@@ -19,41 +19,32 @@ struct TodoListView: View {
                 if presenter.isLoading {
                     ProgressView("Загрузка...")
                 } else {
-                    VStack(spacing: 0) {
-                        HStack(spacing: 10) {
-                            Image(systemName: "mic.fill")
-                                .foregroundStyle(.secondary)
-                                .font(.body)
-                            TextField("Поиск", text: $searchText)
-                                .textFieldStyle(.plain)
-                                .onChange(of: searchText) { _, newValue in
-                                    presenter.searchChanged(newValue)
-                                }
-                        }
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 10)
-                        .background(Color(uiColor: .tertiarySystemFill))
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                        .padding(.horizontal)
-                        .padding(.vertical, 8)
-
-                        List {
-                            ForEach(presenter.items, id: \.id) { item in
-                                TodoListRowView(
-                                    item: item,
-                                    onToggleCompleted: { presenter.toggleCompleted(item) },
-                                    onTapRow: { presenter.editTapped(item: item) }
-                                )
-                                .listRowBackground(Color(uiColor: .systemBackground))
-                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                    Button(role: .destructive) { presenter.deleteTapped(item) } label: {
-                                        Label("Удалить", systemImage: "trash")
-                                    }
+                    List {
+                        ForEach(presenter.items, id: \.id) { item in
+                            TodoListRowView(
+                                item: item,
+                                onToggleCompleted: { presenter.toggleCompleted(item) },
+                                onTapRow: { presenter.editTapped(item: item) }
+                            )
+                            .listRowInsets(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 16))
+                            .listRowSeparator(.hidden)
+                            .listRowBackground(Color(uiColor: .systemBackground))
+                            .swipeActions(edge: .trailing, allowsFullSwipe: true)
+                            {
+                                Button(role: .destructive) { presenter.deleteTapped(item) } label: {
+                                    Label("Удалить", systemImage: "trash")
+                            
                                 }
                             }
                         }
                     }
+                    
+                    }
                 }
+            
+            .searchable(text: $searchText, prompt: "Поиск")
+            .onChange(of: searchText) { _, newValue in
+                presenter.searchChanged(newValue)
             }
             .navigationTitle("Задачи")
             .toolbar {
@@ -61,6 +52,14 @@ struct TodoListView: View {
                     Button { presenter.addTapped() } label: {
                         Image(systemName: "plus")
                     }
+                }
+                ToolbarItem(placement: .bottomBar) {
+                    HStack {
+                        Text("\(presenter.items.count) Задач")
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity)
                 }
             }
             .alert("Ошибка", isPresented: Binding(
@@ -80,6 +79,16 @@ struct TodoListView: View {
                 }
             }
         }
+        .simultaneousGesture(
+            TapGesture().onEnded { _ in
+                UIApplication.shared.sendAction(
+                    #selector(UIResponder.resignFirstResponder),
+                    to: nil,
+                    from: nil,
+                    for: nil
+                )
+            }
+        )
         .onAppear { presenter.onAppear() }
     }
 }

@@ -43,7 +43,15 @@ struct TodoListRowView: View {
             .onTapGesture { onTapRow?() }
         }
         .frame(minWidth: 320, maxWidth: 320, minHeight: 90)
+        
         .padding(.vertical, 4)
+        .overlay(alignment: .bottom) {
+            Rectangle()
+                .fill(Color.secondary.opacity(0.5))
+                .frame(height: 1)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, -50) 
+        }
     }
 }
 
