@@ -12,12 +12,13 @@ import Combine
 
 enum TodoListRoute: Identifiable {
     case add
+    case view(TodoItem)
     case edit(TodoItem)
-    
-    
+
     var id: String {
         switch self {
         case .add: return "add"
+        case .view(let item): return "view-\(item.id)"
         case .edit(let item): return "edit-\(item.id)"
         }
     }
@@ -33,10 +34,14 @@ final class TodoListRouter: TodoListRouterProtocol, ObservableObject {
         presentedRoute = .add
     }
     
+    func showViewTask(_ item: TodoItem) {
+        presentedRoute = .view(item)
+    }
+
     func showEditTask(_ item: TodoItem) {
         presentedRoute = .edit(item)
     }
-    
+
     func dismiss() {
         presentedRoute = nil
     }

@@ -21,24 +21,9 @@ struct TodoListView: View {
                 } else {
                     List {
                         ForEach(presenter.items, id: \.id) { item in
-                            TodoListRowView(
-                                item: item,
-                                onToggleCompleted: { presenter.toggleCompleted(item) },
-                                onTapRow: { presenter.editTapped(item: item) }
-                            )
-                            .listRowInsets(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 16))
-                            .listRowSeparator(.hidden)
-                            .listRowBackground(Color(uiColor: .systemBackground))
-                            .swipeActions(edge: .trailing, allowsFullSwipe: true)
-                            {
-                                Button(role: .destructive) { presenter.deleteTapped(item) } label: {
-                                    Label("Удалить", systemImage: "trash")
-                            
-                                }
-                            }
+                            listRow(for: item)
                         }
                     }
-                    
                     }
                 }
 
@@ -74,12 +59,33 @@ struct TodoListView: View {
             } message: {
                 if let msg = p.errorMessage { Text(msg) }
             }
-            .sheet(item: $router.presentedRoute) { route in
+            .fullScreenCover(item: $router.presentedRoute) { route in
                 switch route {
                 case .add:
-                    Text("Экран добавления — этап 8")
+                    TodoTaskFormView(mode: .add,
+                                     onDismiss: {router.dismiss()},             onSaveNew: { title, taskDescription in
+                        presenter.submitNewTask(title: title, taskDescription: taskDescription)
+                    },
+                    onSaveEdit: { _ in }
+                )
+                case .view(let item):
+                    TodoTaskFormView(
+                        mode: .view(item),
+                        onDismiss: { router.dismiss() },
+                        onSaveNew: { _, _ in },
+                        onSaveEdit: { updated in
+                            presenter.submitUpdatedTask(updated)
+                        }
+                    )
                 case .edit(let item):
-                    Text("Редактирование: \(item.title)")
+                    TodoTaskFormView(
+                        mode: .edit(item),
+                        onDismiss: { router.dismiss() },
+                        onSaveNew: { _, _ in },
+                        onSaveEdit: { updated in
+                            presenter.submitUpdatedTask(updated)
+                        }
+                    )
                 }
             }
         }
@@ -94,6 +100,36 @@ struct TodoListView: View {
             }
         )
         .onAppear { presenter.onAppear() }
+    }
+
+    @ViewBuilder
+    private func listRow(for item: TodoItem) -> some View {
+        let shareText = [item.title, item.taskDescription ?? ""].filter { !$0.isEmpty }.joined(separator: "\n\n")
+        TodoListRowView(
+            item: item,
+            onToggleCompleted: { presenter.toggleCompleted(item) },
+            onTapRow: { presenter.viewTapped(item: item) }
+        )
+        .listRowInsets(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
+        .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
+        .alignmentGuide(.listRowSeparatorTrailing) { d in d[.trailing] }
+        .listRowBackground(Color(uiColor: .systemBackground))
+        .contextMenu {
+            Button {
+                presenter.editTapped(item: item)
+            } label: {
+                Label("Редактировать", image: "edit")
+            }
+            ShareLink(item: shareText, subject: Text(item.title), message: Text(item.taskDescription ?? "")) {
+                Label("Поделиться", image: "export")
+            }
+            Button(role: .destructive) {
+                presenter.deleteTapped(item)
+            } label: {
+                Label("Удалить", image: "trash")
+            }
+        }
+
     }
 }
 

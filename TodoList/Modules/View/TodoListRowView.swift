@@ -28,11 +28,14 @@ struct TodoListRowView: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(item.title)
-                    .font(.headline)
+                    .font(.system(size: 16, weight: .medium))
                 if let desc = item.taskDescription, !desc.isEmpty {
                     Text(desc)
-                        .font(.caption)
+                        .font(.system(size: 12, weight: .regular))
                         .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                        .truncationMode(.tail)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 Text(AppDateFormatters.ddMMyy.string(from: item.createdAt))
                     .font(.caption2)
@@ -42,16 +45,9 @@ struct TodoListRowView: View {
             .contentShape(Rectangle())
             .onTapGesture { onTapRow?() }
         }
-        .frame(minWidth: 320, maxWidth: 320, minHeight: 90)
+        .frame(maxWidth: .infinity, minHeight: 90)
         
         .padding(.vertical, 4)
-        .overlay(alignment: .bottom) {
-            Rectangle()
-                .fill(Color.secondary.opacity(0.5))
-                .frame(height: 1)
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, -50) 
-        }
     }
 }
 

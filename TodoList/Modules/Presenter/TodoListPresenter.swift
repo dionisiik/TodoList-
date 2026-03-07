@@ -41,10 +41,41 @@ final class TodoListPresenter: ObservableObject {
         }
     }
     
+    func submitNewTask(title: String, taskDescription: String?) {
+        guard !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {return}
+        interactor.add(title: title.trimmingCharacters(in: .whitespacesAndNewlines), taskDescription: taskDescription?.isEmpty == true ? nil : taskDescription?.trimmingCharacters(in: .whitespacesAndNewlines), completed: false) { [weak self] result in
+            guard let self else {return}
+            switch result {
+            case .success:
+                self.router?.dismiss()
+                self.loadTodos()
+            case .failure(let error):
+                self.errorMessage = error.localizedDescription
+            }
+        }
+    }
+    
+    func submitUpdatedTask(_ updated: TodoItem) {
+        interactor.update(updated) { [weak self] result in
+            guard let self else {return}
+            switch result {
+            case .success:
+                self.router?.dismiss()
+                self.loadTodos()
+            case .failure(let error):
+                self.errorMessage = error.localizedDescription
+            }
+        }
+    }
+    
     func addTapped() {
         router?.showAddTask()
     }
-    
+
+    func viewTapped(item: TodoItem) {
+        router?.showViewTask(item)
+    }
+
     func editTapped(item: TodoItem) {
         router?.showEditTask(item)
     }
