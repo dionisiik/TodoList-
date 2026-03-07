@@ -41,23 +41,27 @@ struct TodoListView: View {
                     
                     }
                 }
-            
+
             .searchable(text: $searchText, prompt: "Поиск")
             .onChange(of: searchText) { _, newValue in
                 presenter.searchChanged(newValue)
             }
             .navigationTitle("Задачи")
             .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Button { presenter.addTapped() } label: {
-                        Image(systemName: "plus")
-                    }
-                }
                 ToolbarItem(placement: .bottomBar) {
-                    HStack {
+                    ZStack(alignment: .center) {
                         Text("\(presenter.items.count) Задач")
-                            .foregroundStyle(.secondary)
-                        Spacer()
+                            .foregroundStyle(.primary)
+                            .frame(maxWidth: .infinity)
+                        HStack {
+                            Spacer(minLength: 0)
+                            Button {
+                                presenter.addTapped()
+                            } label: {
+                                Image(systemName: "square.and.pencil")
+                                    .foregroundStyle(.yellow)
+                            }
+                        }
                     }
                     .frame(maxWidth: .infinity)
                 }
