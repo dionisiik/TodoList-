@@ -1,10 +1,3 @@
-//
-//  TodoListRouter.swift
-//  TodoList
-//
-//  Created by Дионисий Коневиченко on 06.03.2026.
-//
-
 import Foundation
 import SwiftUI
 import Combine
@@ -14,7 +7,7 @@ enum TodoListRoute: Identifiable {
     case add
     case view(TodoItem)
     case edit(TodoItem)
-
+    
     var id: String {
         switch self {
         case .add: return "add"
@@ -37,11 +30,11 @@ final class TodoListRouter: TodoListRouterProtocol, ObservableObject {
     func showViewTask(_ item: TodoItem) {
         presentedRoute = .view(item)
     }
-
+    
     func showEditTask(_ item: TodoItem) {
         presentedRoute = .edit(item)
     }
-
+    
     func dismiss() {
         presentedRoute = nil
     }

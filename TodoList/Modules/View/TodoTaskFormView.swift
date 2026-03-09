@@ -1,10 +1,3 @@
-//
-//  TodoTaskFormView.swift
-//  TodoList
-//
-//  Created by Дионисий Коневиченко on 07.03.2026.
-//
-
 import SwiftUI
 
 enum TodoTaskFormMode {
@@ -18,7 +11,7 @@ struct TodoTaskFormView: View {
     let onDismiss: () -> Void
     let onSaveNew: (String, String?) -> Void
     let onSaveEdit: (TodoItem) -> Void
-
+    
     private var initialItem: TodoItem? {
         switch mode {
         case .add: return nil
@@ -30,14 +23,14 @@ struct TodoTaskFormView: View {
         if case .view = mode { return !isEditing}
         return false
     }
-
+    
     @State private var title: String = ""
     @State private var description: String = ""
     @State private var date: Date = Date()
     @State private var isEditing = false
     
     
-
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -51,11 +44,11 @@ struct TodoTaskFormView: View {
                             .font(.largeTitle)
                             .fontWeight(.bold)
                     }
-
+                    
                     Text(AppDateFormatters.ddMMyy.string(from: date))
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
-
+                    
                     if isReadOnly {
                         Text(description.isEmpty ? "Без описания" : description)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -121,14 +114,14 @@ struct TodoTaskFormView: View {
             }
         }
     }
-
+    
     private func saveIfNeeded() {
         let t = title.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !t.isEmpty else { return }
-
+        
         let desc = description.trimmingCharacters(in: .whitespacesAndNewlines)
         let descOrNil = desc.isEmpty ? nil : desc
-
+        
         switch mode {
         case .add:
             onSaveNew(t, descOrNil)

@@ -1,5 +1,3 @@
-
-
 import SwiftUI
 
 struct TodoListView: View {
@@ -24,9 +22,9 @@ struct TodoListView: View {
                             listRow(for: item)
                         }
                     }
-                    }
                 }
-
+            }
+            
             .searchable(text: $searchText, prompt: "Поиск")
             .onChange(of: searchText) { _, newValue in
                 presenter.searchChanged(newValue)
@@ -63,11 +61,12 @@ struct TodoListView: View {
                 switch route {
                 case .add:
                     TodoTaskFormView(mode: .add,
-                                     onDismiss: {router.dismiss()},             onSaveNew: { title, taskDescription in
+                                     onDismiss: {router.dismiss()},
+                                     onSaveNew: { title, taskDescription in
                         presenter.submitNewTask(title: title, taskDescription: taskDescription)
                     },
-                    onSaveEdit: { _ in }
-                )
+                                     onSaveEdit: { _ in }
+                    )
                 case .view(let item):
                     TodoTaskFormView(
                         mode: .view(item),
@@ -101,7 +100,7 @@ struct TodoListView: View {
         )
         .onAppear { presenter.onAppear() }
     }
-
+    
     @ViewBuilder
     private func listRow(for item: TodoItem) -> some View {
         let shareText = [item.title, item.taskDescription ?? ""].filter { !$0.isEmpty }.joined(separator: "\n\n")
@@ -129,7 +128,7 @@ struct TodoListView: View {
                 Label("Удалить", image: "trash")
             }
         }
-
+        
     }
 }
 

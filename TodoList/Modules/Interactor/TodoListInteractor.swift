@@ -1,10 +1,3 @@
-//
-//  TodoListInteractor.swift
-//  TodoList
-//
-//  Created by Дионисий Коневиченко on 06.03.2026.
-//
-
 import Foundation
 
 private let hasLoadedFromAPIKey = "TodoList.hasLoadedFromAPI"
@@ -84,27 +77,27 @@ final class TodoListInteractor: TodoListInteractorProtocol {
             }
         }
     }
-        
-        
+    
+    
     private func saveTodoItemsFromAPI(_ items: [TodoItem], completion: @escaping (Result<Void, Error>) -> Void) {
-            var lastError: Error?
-            let group = DispatchGroup()
-            for item in items {
-                group.enter()
-                repository.add(title: item.title, taskDescription: item.taskDescription, completed: item.completed) { result in
-                    if case .failure(let e) = result { lastError = e }
-                    group.leave()
-                }
+        var lastError: Error?
+        let group = DispatchGroup()
+        for item in items {
+            group.enter()
+            repository.add(title: item.title, taskDescription: item.taskDescription, completed: item.completed) { result in
+                if case .failure(let e) = result { lastError = e }
+                group.leave()
             }
-            group.notify(queue: queue) {
-                if let lastError {
-                    DispatchQueue.main.async { completion(.failure(lastError)) }
-                } else {
-                    DispatchQueue.main.async { completion(.success(())) }
-                }
+        }
+        group.notify(queue: queue) {
+            if let lastError {
+                DispatchQueue.main.async { completion(.failure(lastError)) }
+            } else {
+                DispatchQueue.main.async { completion(.success(())) }
             }
         }
     }
+}
 
 
-      
+

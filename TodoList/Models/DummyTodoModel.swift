@@ -1,5 +1,3 @@
-
-
 import Foundation
 
 struct DummyTodoModel: Codable, Sendable {

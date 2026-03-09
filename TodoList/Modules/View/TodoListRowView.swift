@@ -1,10 +1,3 @@
-//
-//  TodoListRowView.swift
-//  TodoList
-//
-//  Created by Дионисий Коневиченко on 06.03.2026.
-//
-
 import SwiftUI
 
 
@@ -13,7 +6,7 @@ struct TodoListRowView: View {
     var onToggleCompleted: (() -> Void)? = nil
     var onTapRow: (() -> Void)? = nil
     
-
+    
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             Button {
@@ -25,7 +18,7 @@ struct TodoListRowView: View {
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-
+            
             VStack(alignment: .leading, spacing: 4) {
                 Text(item.title)
                     .font(.system(size: 16, weight: .medium))

@@ -1,10 +1,3 @@
-//
-//  TodoListPresenter.swift
-//  TodoList
-//
-//  Created by Дионисий Коневиченко on 06.03.2026.
-//
-
 import Foundation
 import Combine
 
@@ -71,11 +64,11 @@ final class TodoListPresenter: ObservableObject {
     func addTapped() {
         router?.showAddTask()
     }
-
+    
     func viewTapped(item: TodoItem) {
         router?.showViewTask(item)
     }
-
+    
     func editTapped(item: TodoItem) {
         router?.showEditTask(item)
     }
