@@ -1,13 +1,13 @@
 import Foundation
 
-struct DummyTodoModel: Codable, Sendable {
+struct DummyTodoModel: Decodable, Sendable {
     let id: Int
     let todo: String
     let completed: Bool
     let userId: Int
 }
 
-struct DummyTodoResponse: Codable, Sendable {
+struct DummyTodoResponse: Decodable, Sendable {
     let todos: [DummyTodoModel]
     let total: Int
     let skip: Int
