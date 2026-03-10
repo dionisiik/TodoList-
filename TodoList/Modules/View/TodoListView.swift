@@ -2,12 +2,10 @@ import SwiftUI
 
 struct TodoListView: View {
     @StateObject private var presenter: TodoListPresenter
-    @ObservedObject private var router: TodoListRouter
     @State private var searchText = ""
     
-    init(presenter: TodoListPresenter, router: TodoListRouter) {
+    init(presenter: TodoListPresenter) {
         _presenter = StateObject(wrappedValue: presenter)
-        _router = ObservedObject(wrappedValue: router)
     }
     
     var body: some View {
@@ -57,11 +55,11 @@ struct TodoListView: View {
             } message: {
                 if let msg = p.errorMessage { Text(msg) }
             }
-            .fullScreenCover(item: $router.presentedRoute) { route in
+            .fullScreenCover(item: $presenter.presentedRoute) { route in
                 switch route {
                 case .add:
                     TodoTaskFormView(mode: .add,
-                                     onDismiss: {router.dismiss()},
+                                     onDismiss: {presenter.dismissRoute()},
                                      onSaveNew: { title, taskDescription in
                         presenter.submitNewTask(title: title, taskDescription: taskDescription)
                     },
@@ -70,7 +68,7 @@ struct TodoListView: View {
                 case .view(let item):
                     TodoTaskFormView(
                         mode: .view(item),
-                        onDismiss: { router.dismiss() },
+                        onDismiss: { presenter.dismissRoute() },
                         onSaveNew: { _, _ in },
                         onSaveEdit: { updated in
                             presenter.submitUpdatedTask(updated)
@@ -79,7 +77,7 @@ struct TodoListView: View {
                 case .edit(let item):
                     TodoTaskFormView(
                         mode: .edit(item),
-                        onDismiss: { router.dismiss() },
+                        onDismiss: { presenter.dismissRoute() },
                         onSaveNew: { _, _ in },
                         onSaveEdit: { updated in
                             presenter.submitUpdatedTask(updated)

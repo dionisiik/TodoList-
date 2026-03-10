@@ -9,6 +9,6 @@ enum TodoListModule {
         let interactor = TodoListInteractor(repository: repository, apiService: apiService)
         let router = TodoListRouter()
         let presenter = TodoListPresenter(interactor: interactor, router: router)
-        return TodoListView(presenter: presenter, router: router)
+        return TodoListView(presenter: presenter)
     }
 }

@@ -5,14 +5,21 @@ final class TodoListPresenter: ObservableObject {
     @Published private(set) var items: [TodoItem] = []
     @Published private(set) var errorMessage: String?
     @Published private(set) var isLoading = false
-    
+    @Published var presentedRoute: TodoListRoute?
     
     private let interactor: TodoListInteractorProtocol
-    private weak var router: TodoListRouterProtocol?
+    private let router: TodoListRouterProtocol
     
     init(interactor: TodoListInteractorProtocol, router: TodoListRouterProtocol) {
         self.interactor = interactor
         self.router = router
+        
+        
+        
+        if let observableRouter = router as? TodoListRouter {
+            observableRouter.$presentedRoute
+                .assign(to: &$presentedRoute)
+        }
     }
     
     func onAppear() {
@@ -40,7 +47,7 @@ final class TodoListPresenter: ObservableObject {
             guard let self else {return}
             switch result {
             case .success:
-                self.router?.dismiss()
+                self.router.dismiss()
                 self.loadTodos()
             case .failure(let error):
                 self.errorMessage = error.localizedDescription
@@ -53,7 +60,7 @@ final class TodoListPresenter: ObservableObject {
             guard let self else {return}
             switch result {
             case .success:
-                self.router?.dismiss()
+                self.router.dismiss()
                 self.loadTodos()
             case .failure(let error):
                 self.errorMessage = error.localizedDescription
@@ -62,17 +69,20 @@ final class TodoListPresenter: ObservableObject {
     }
     
     func addTapped() {
-        router?.showAddTask()
+        router.showAddTask()
     }
     
     func viewTapped(item: TodoItem) {
-        router?.showViewTask(item)
+        router.showViewTask(item)
     }
     
     func editTapped(item: TodoItem) {
-        router?.showEditTask(item)
+        router.showEditTask(item)
     }
     
+    func dismissRoute() {
+        router.dismiss()
+    }
     
     func deleteTapped(_ item: TodoItem) {
         interactor.delete(id: item.id) { [weak self] result in
